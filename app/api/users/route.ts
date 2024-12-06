@@ -40,7 +40,7 @@ export const POST = async (req: Request) => {
       password: hashedPassword,
       phone_number: body.phone_number,
       address: body.address,
-      profile_image: body.profile_image,
+      profile_image: body.profile_image.length === 0? "" : body.profile_image[0],
     });
 
     await user.save();

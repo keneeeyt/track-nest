@@ -91,7 +91,7 @@ const UserCreatePage = () => {
       }
 
       const resp = await axios.post("/api/users", formData);
-      toast.success(resp.data.message);
+      toast.success(resp.data);
       form.reset();
       router.push("/admin/users");
     } catch (err) {
