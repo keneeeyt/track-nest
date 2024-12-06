@@ -1,8 +1,14 @@
 import { NextResponse, NextRequest } from "next/server";
 import { decodeToken } from "./middleware/authentication";
 
+interface User {
+  id: string;
+  email: string;
+  role: string;
+  // Add other properties as needed
+}
 interface AuthenticatedRequest extends NextRequest {
-  user?: any;
+  user?: User;
 }
 export const config = {
   matcher: [
