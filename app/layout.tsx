@@ -1,6 +1,6 @@
 import { Outfit } from "next/font/google";
 import "./globals.css";
-
+import { Toaster } from "sonner";
 
 const outfit = Outfit({ subsets: ["latin"], display: "swap" });
 
@@ -15,7 +15,8 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
   return (
     <html lang="en">
       <body className={outfit.className}>
-            <div className="md:px-20">{children}</div>
+            <div className="2xl:px-20">{children}</div>
+            <Toaster richColors />
       </body>
     </html>
   );

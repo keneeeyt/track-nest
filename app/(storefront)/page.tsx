@@ -1,7 +1,9 @@
+import SignIn from "./_authentication/sign-in";
+
 function IndexPage(){
   return(
     <div>
-      This is sign in
+      <SignIn />
     </div>
   )
 }
