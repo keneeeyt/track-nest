@@ -1,3 +1,4 @@
+"use client"
 import { ReactNode } from "react";
 import AdminNavigation from "./_components/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -13,8 +14,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 function AdminLayout({ children }: { readonly children: ReactNode }) {
+  const router = useRouter();
+  const Signout = async () => {
+    try{
+      const resp = await axios.post('/api/auth/signout');
+      toast.success(resp.data.message);
+      router.push("/");
+    }catch(err){
+      toast.error("Something went wrong. Please try again later.");
+    }
+  }
   return (
     <div className="flex w-full flex-col max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <header className="sticky top-0 flex h-16 items-center justify-between gap-4 border-b bg-white">
@@ -51,7 +65,7 @@ function AdminLayout({ children }: { readonly children: ReactNode }) {
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={Signout}>
               <LogOut className="mr-2 h-4 w-4" />
                <span>Sign Out</span>
               <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
