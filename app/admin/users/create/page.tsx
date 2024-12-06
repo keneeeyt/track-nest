@@ -31,6 +31,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button as CustomButton } from "@/components/custom/button";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+
 
 const UserShema = z
   .object({
@@ -71,21 +74,26 @@ type UserFormValues = z.infer<typeof UserShema>;
 
 const UserCreatePage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [profile_image, setProfile_image] = useState<string>("");
-  const [images, setImages] = useState<string[]>([])
+  const [images, setImages] = useState<string[]>([]);
+  const router = useRouter();
 
   const form = useForm<UserFormValues>({
     resolver: zodResolver(UserShema),
     mode: "onChange",
   });
 
-  const onSubmit = (data: UserFormValues) => {
+  const onSubmit = async (data: UserFormValues) => {
     setIsLoading(true);
     try {
       const formData = {
         ...data,
         profile_image: images,
       }
+
+      const resp = await axios.post("/api/users", formData);
+      toast.success(resp.data.message);
+      form.reset();
+      router.push("/admin/users");
     } catch (err) {
       toast.error("Something went wrong. Please try again later.");
     } finally {
