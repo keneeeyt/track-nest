@@ -291,7 +291,7 @@ const UserCreatePage = () => {
                       console.log(err);
                       toast.error("Image upload failed");
                     }}
-                    className="w-full h-40"
+                    className="w-full h-55"
                   />
                 )}
               </div>
