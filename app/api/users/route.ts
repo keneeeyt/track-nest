@@ -9,18 +9,18 @@ export const POST = async (req: Request) => {
   try {
     await connectDB();
 
-    // const cookieStore = cookies();
-    // const accessToken = cookieStore.get("access-token")?.value;
-    // if (!accessToken) return new NextResponse("Unauthorized: Token is missing or invalid.", { status: 401 });
+    const cookieStore = cookies();
+    const accessToken = cookieStore.get("access-token")?.value;
+    if (!accessToken) return new NextResponse("Unauthorized: Token is missing or invalid.", { status: 401 });
 
-    // const isAdmin = decodeToken(accessToken);
+    const isAdmin = decodeToken(accessToken);
 
-    // if (
-    //   !isAdmin ||
-    //   (isAdmin.email !== `${process.env.VALID_EMAIL_ADMIN}` &&
-    //     isAdmin.email !== "cervantes.klc@gmail.com")
-    // )
-    //   return new NextResponse("Unauthorized", { status: 401 });
+    if (
+      !isAdmin ||
+      (isAdmin.email !== `${process.env.VALID_EMAIL_ADMIN}` &&
+        isAdmin.email !== "cervantes.klc@gmail.com")
+    )
+      return new NextResponse("Unauthorized", { status: 401 });
 
     const body = await req.json();
 
