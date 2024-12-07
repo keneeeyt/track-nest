@@ -18,13 +18,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadDropzone } from "@/lib/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,6 +30,12 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+
+interface ErrorResponse {
+  response: {
+    data: string;
+  };
+}
 
 const UserShema = z
   .object({
@@ -91,7 +90,8 @@ const EditUserPage = ({ params }: { params: { id: string } }) => {
         setImages(profile);
         
       }catch(err){
-        toast.error((err as any).response.data);
+        const error = err as ErrorResponse;
+        toast.error(error.response.data);
       }finally{
         setInitialLoading(false);
       }
@@ -110,7 +110,8 @@ const EditUserPage = ({ params }: { params: { id: string } }) => {
       const resp = await axios.put(`/api/users/${params.id}`, formData);
       toast.success(resp.data);
     } catch (err) {
-      toast.error((err as any).response.data);
+      const error = err as ErrorResponse;
+      toast.error(error.response.data);
     } finally {
       setIsLoading(false);
     }

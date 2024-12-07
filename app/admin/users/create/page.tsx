@@ -34,6 +34,11 @@ import { Button as CustomButton } from "@/components/custom/button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
+interface ErrorResponse {
+  response: {
+    data: string;
+  };
+}
 
 const UserShema = z
   .object({
@@ -95,7 +100,8 @@ const UserCreatePage = () => {
       form.reset();
       router.push("/admin/users");
     } catch (err) {
-      toast.error((err as any).response.data);
+      const error = err as ErrorResponse;
+      toast.error(error.response.data);
     } finally {
       setIsLoading(false);
     }
