@@ -24,8 +24,6 @@ function AdminLayout({ children }: { readonly children: ReactNode }) {
   const router = useRouter();
   const token = Cookies.get("access-token") || "";
   const user = decodeToken(token);
-
-  console.log(user)
   
   const Signout = async () => {
     try{
