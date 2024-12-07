@@ -79,7 +79,7 @@ function AdminLayout({ children }: { readonly children: ReactNode }) {
         <DropdownMenu>
         <DropdownMenuTrigger className="border-none focus:outline-none">
             <Avatar>
-              <Image src={`${user?.profile_image ?? 'https://res.cloudinary.com/dzosecp8f/image/upload/v1677940151/blank-profile-picture-g2b8faf720_1280_eks7er.png'}`} alt="user-profile" width={50} height={50} className="border" />
+              <Image src={`${user?.profile_image ?? 'https://res.cloudinary.com/dzosecp8f/image/upload/v1677940151/blank-profile-picture-g2b8faf720_1280_eks7er.png'}`} alt="user-profile" width={50} height={50} className="object-cover" />
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
