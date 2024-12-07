@@ -1,9 +1,9 @@
 "use client"
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import AdminNavigation from "./_components/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { CircleUser, LogOut, MenuIcon } from "lucide-react";
+import { CircleUser, LogOut, MenuIcon, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,9 +21,24 @@ import Cookies from 'js-cookie';
 import { decodeToken } from "@/middleware/authentication";
 
 function AdminLayout({ children }: { readonly children: ReactNode }) {
+  interface User {
+    profile_image: string;
+    // add other properties as needed
+  }
+  
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-  const token = Cookies.get("access-token") || "";
-  const user = decodeToken(token);
+
+  useEffect(() => {
+    const token = Cookies.get("access-token") || "";
+    if (token) {
+      const decodedUser = decodeToken(token);
+      setUser({
+        profile_image: String(decodedUser.profile_image) || "", // provide a default value if necessary
+        // add other properties as needed
+      });
+    }
+  }, []);
   
   const Signout = async () => {
     try{
