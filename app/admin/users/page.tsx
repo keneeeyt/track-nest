@@ -99,7 +99,7 @@ const UsersPage = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
-              <Link href={`/dashboard/products/${row.original._id}`}>Edit</Link>
+              <Link href={`/admin/users/${row.original._id}`}>Edit</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>

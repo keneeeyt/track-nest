@@ -95,7 +95,7 @@ const UserCreatePage = () => {
       form.reset();
       router.push("/admin/users");
     } catch (err) {
-      toast.error("Something went wrong. Please try again later.");
+      toast.error((err as any).response.data);
     } finally {
       setIsLoading(false);
     }
