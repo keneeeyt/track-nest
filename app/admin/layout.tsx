@@ -39,6 +39,8 @@ function AdminLayout({ children }: { readonly children: ReactNode }) {
       });
     }
   }, []);
+
+  console.log(user)
   
   const Signout = async () => {
     try{
@@ -76,7 +78,7 @@ function AdminLayout({ children }: { readonly children: ReactNode }) {
         <DropdownMenu>
         <DropdownMenuTrigger className="border-none focus:outline-none">
             <Avatar>
-              <AvatarImage src={`${user && user.profile_image}`} alt="user-profile" />
+              <AvatarImage src={`${user?.profile_image ?? ''}`} alt="user-profile" />
               <AvatarFallback>
                 <CircleUser className="h-6 w-6 text-gray-500" />
               </AvatarFallback>
