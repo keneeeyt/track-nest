@@ -17,9 +17,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Cookies from 'js-cookie';
+import { decodeToken } from "@/middleware/authentication";
 
 function AdminLayout({ children }: { readonly children: ReactNode }) {
   const router = useRouter();
+  const token = Cookies.get("access-token") || "";
+  const user = decodeToken(token);
+
+  console.log(user)
+  
   const Signout = async () => {
     try{
       const resp = await axios.post('/api/auth/signout');
@@ -56,7 +63,7 @@ function AdminLayout({ children }: { readonly children: ReactNode }) {
         <DropdownMenu>
         <DropdownMenuTrigger className="border-none focus:outline-none">
             <Avatar>
-              <AvatarImage src="" alt="user-profile" />
+              <AvatarImage src={`${user && user.profile_image}`} alt="user-profile" />
               <AvatarFallback>
                 <CircleUser className="h-6 w-6 text-gray-500" />
               </AvatarFallback>

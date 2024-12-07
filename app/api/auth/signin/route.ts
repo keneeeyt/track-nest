@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
       id: user._id,
       email: user.email,
       role: user.role,
+      profile_image: user.profile_image
     };
 
     const token = await createToken(payload);
