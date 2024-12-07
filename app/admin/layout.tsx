@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useState } from "react";
 import AdminNavigation from "./_components/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { CircleUser, LogOut, MenuIcon } from "lucide-react";
+import { LogOut, MenuIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,12 +13,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Cookies from 'js-cookie';
 import { decodeToken } from "@/middleware/authentication";
+import Image from "next/image";
 
 function AdminLayout({ children }: { readonly children: ReactNode }) {
   interface User {
@@ -78,10 +79,7 @@ function AdminLayout({ children }: { readonly children: ReactNode }) {
         <DropdownMenu>
         <DropdownMenuTrigger className="border-none focus:outline-none">
             <Avatar>
-              <AvatarImage src={`${user?.profile_image ?? ''}`} alt="user-profile" />
-              <AvatarFallback>
-                <CircleUser className="h-6 w-6 text-gray-500" />
-              </AvatarFallback>
+              <Image src={`${user?.profile_image ?? 'https://res.cloudinary.com/dzosecp8f/image/upload/v1677940151/blank-profile-picture-g2b8faf720_1280_eks7er.png'}`} alt="user-profile" width={50} height={50} className="border" />
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
