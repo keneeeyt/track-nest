@@ -11,6 +11,13 @@ export async function POST() {
       maxAge: 0, // Expire the cookie immediately
     });
 
+    cookieStore.set("profile_image", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 0, // Expire the cookie immediately
+    });
+
     return NextResponse.json({ message: "Signed out successfully." }, { status: 200 });
   } catch (err) {
     console.error("Error during signout:", err);

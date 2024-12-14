@@ -42,13 +42,18 @@ export async function POST(req: NextRequest) {
       id: user._id,
       email: user.email,
       role: user.role,
-      profile_image: user.profile_image
     };
 
     const token = await createToken(payload);
     
     const cookieStore = cookies();
+
     cookieStore.set("access-token", token, {
+      secure: false,
+      maxAge: 60 * 60 * 24, // 1 day
+    });
+
+    cookieStore.set("profile_image", user.profile_image, {
       secure: false,
       maxAge: 60 * 60 * 24, // 1 day
     });

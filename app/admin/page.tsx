@@ -1,8 +1,8 @@
+import ComingSoon from "@/components/coming-soon";
+
 function AdminPage (){
   return (
-    <div>
-      This is the admin page
-    </div>
+    <ComingSoon />
   )
 }
 
