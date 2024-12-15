@@ -56,7 +56,7 @@ export const GET = async () => {
   try {
     await connectDB();
 
-    const users = await User.find({ isDelete: false });
+    const users = await User.find({ isDelete: false, role: "owner" });
     return new NextResponse(JSON.stringify(users), { status: 200 });
   } catch (err) {
     console.error(err);

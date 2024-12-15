@@ -92,3 +92,41 @@ export const PUT = async (
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 };
+
+
+
+export const DELETE = async (req: NextRequest, {params}: {params: {id: string}}) => { //eslint-disable-line
+  try{
+
+    await connectDB();
+
+    const cookieStore = cookies();
+    const accessToken = cookieStore.get("access-token")?.value;
+    if (!accessToken)
+      return new NextResponse("Unauthorized: Token is missing or invalid.", {
+        status: 401,
+      });
+
+    const isAuthorize = decodeToken(accessToken);
+
+    if(isAuthorize.role !== "admin" && isAuthorize.role !== "owner") {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const { id } = params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return new NextResponse("Invalid User ID", { status: 400 });
+    }
+
+    const user = await User.findByIdAndDelete(id);
+
+    if (!user) return new NextResponse("User not found", {status: 404});
+
+    return new NextResponse("User deleted successfully", {status: 200});
+
+  }catch(err){
+    console.error(err);
+    return new NextResponse("Internal Server Error", {status: 500});
+  }
+}

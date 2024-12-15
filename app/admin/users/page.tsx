@@ -1,4 +1,5 @@
 "use client"
+import CustomModal from "@/components/custom-modal";
 import { DataTable } from "@/components/custom/data-table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,9 +12,21 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+
+interface User {
+  first_name: string;
+  email: string;
+  createdAt: string;
+  _id: string;
+}
+
+
 const UsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -31,11 +44,33 @@ const UsersPage = () => {
     getUsers();
   }, []);
 
-  interface User {
-    first_name: string;
-    email: string;
-    createdAt: string;
-    _id: string;
+  const deleteUser = async () => {
+    try{
+      setIsDeleteLoading(true);
+      if(userId){
+        await axios.delete(`/api/users/${userId}`);
+        const newUsers = users.filter((user) => user._id !== userId);
+        setUsers(newUsers);
+        toast.success('User deleted successfully.');
+      } else {
+        toast.error('Something went wrong. Please try again later.');
+      }
+    }catch(err){
+      console.error('Error deleting user:', err);
+      toast.error('Something went wrong. Please try again later.');
+    } finally {
+      setIsDeleteLoading(false);
+      setOpen(false);
+    }
+  }
+
+  const handleOpenModal = async (id: string) => {
+    if(id){
+      setOpen(true);
+      setUserId(id);
+    } else {
+      toast.error('Something went wrong. Please try again later.');
+    }
   }
 
   const columns: ColumnDef<User>[] = [
@@ -102,7 +137,7 @@ const UsersPage = () => {
               <Link href={`/admin/users/${row.original._id}`}>Edit</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {handleOpenModal(row.original._id)}}>
               Delete
               <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
             </DropdownMenuItem>
@@ -135,6 +170,15 @@ const UsersPage = () => {
           )}
         </CardContent>
       </Card>
+      <CustomModal
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Delete User"
+        description="Are you sure you want to delete this user?"
+        color="red"
+        onConfirm={() => deleteUser()}
+        loading={isDeleteLoading}
+      />
     </>
   )
 }
