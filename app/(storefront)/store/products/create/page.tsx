@@ -18,13 +18,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadDropzone } from "@/lib/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,7 +26,7 @@ import { ChevronLeft, XIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -45,63 +38,44 @@ interface ErrorResponse {
   };
 }
 
-interface Owners {
-  _id: string;
-  first_name: string;
-  last_name: string;
-}
-
-const StoreSchema = z.object({
-  store_name: z
+const ProductSchema = z.object({
+  product_name: z
     .string()
     .min(3, "Store name must be at least 3 characters long")
     .max(100, "Store name must be at most 100 characters long"),
-  owner_id: z.string(),
-  address: z.string().nonempty("Address is required"),
-  store_logo: z.string().optional(),
-  phone_number: z
-    .string()
-    .regex(/^09\d{9}$/, "Phone number must be 11 digits and start with '09'"),
+  product_description: z.string()
+  .min(55, "Store description must be at least 55 characters long")
+  .max(150, "Store description must be at most 150 characters long"),
+  price: z.number().int().positive("Price must be a positive number"),
+  quantity: z.number().int().positive("Quantity must be a positive number"),
+  product_image: z.string().optional(),
 });
 
-type StoreFormValues = z.infer<typeof StoreSchema>;
+type ProductFormValues = z.infer<typeof ProductSchema>;
 
-const StoreCreatePage = () => {
+const ProductCreatePage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [images, setImages] = useState<string[]>([]);
-  const [owners, setOwners] = useState<Owners[]>([]);
   const router = useRouter();
 
-  const form = useForm<StoreFormValues>({
-    resolver: zodResolver(StoreSchema),
+  const form = useForm<ProductFormValues>({
+    resolver: zodResolver(ProductSchema),
     mode: "onChange",
   });
 
-  useEffect(() => {
-    const getOwners = async () => {
-      try {
-        const owners = await axios.get("/api/users");
-        setOwners(owners.data);
-      } catch (err) {
-        console.error("Error fetching owners:", err);
-        toast.error("Something went wrong. Please try again later.");
-      }
-    };
-    getOwners();
-  }, []);
 
-  const onSubmit = async (data: StoreFormValues) => {
+  const onSubmit = async (data: ProductFormValues) => {
     setIsLoading(true);
     try {
       const formData = {
         ...data,
-        store_logo: images,
+        product_image: images,
       };
 
-      const resp = await axios.post("/api/store", formData);
+      const resp = await axios.post("/api/product", formData);
       toast.success(resp.data);
       form.reset();
-      router.push("/admin/stores");
+      router.push("/store/products");
     } catch (err) {
       const error = err as ErrorResponse;
       toast.error(error.response.data);
@@ -114,17 +88,17 @@ const StoreCreatePage = () => {
     <>
       <div className="flex items-center gap-4">
         <Button asChild size={"icon"} variant={"outline"}>
-          <Link href={"/admin/stores"}>
+          <Link href={"/store/products"}>
             <ChevronLeft className="h-4 w-4" />
           </Link>
         </Button>
-        <h1 className="text-xl font-semibold tracking-tight">New Store</h1>
+        <h1 className="text-xl font-semibold tracking-tight">New Product</h1>
       </div>
       <Card className="mt-5">
         <CardHeader>
-          <CardTitle>Store Details</CardTitle>
+          <CardTitle>Product Details</CardTitle>
           <CardDescription>
-            Use this form to create a new store.
+            Use this form to create a new product.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -132,32 +106,34 @@ const StoreCreatePage = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="md:grid md:grid-cols-2 gap-3">
                 <FormField
-                  name="store_name"
+                  name="product_name"
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        Store Name <span className="text-red-500">*</span>
+                        Product Name <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Enter Store name" />
+                        <Input {...field} placeholder="Enter Product name" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
-                  name="phone_number"
+                  name="price"
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        Phone Number <span className="text-red-500">*</span>
+                        Product Price <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder="Enter your phone number"
+                          type="number"
+                          placeholder="Enter your price"
+                          onChange={(e) => field.onChange(Number(e.target.value))}
                         />
                       </FormControl>
                       <FormMessage />
@@ -165,45 +141,35 @@ const StoreCreatePage = () => {
                   )}
                 />
                 <FormField
-                  name="owner_id"
+                  name="quantity"
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        Select Owner <span className="text-red-500">*</span>
+                        Product Quantity <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Role" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {owners.length > 0 &&
-                              owners.map((owner) => (
-                                <SelectItem key={owner._id} value={owner._id}>
-                                  {owner.first_name} {owner.last_name}
-                                </SelectItem>
-                              ))}
-                          </SelectContent>
-                        </Select>
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder="Enter your quantity"
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
-                  name="address"
+                  name="product_description"
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        Address <span className="text-red-500">*</span>
+                        Product Description <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Textarea {...field} placeholder="Enter your address" />
+                        <Textarea {...field} placeholder="Enter your description" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -211,7 +177,7 @@ const StoreCreatePage = () => {
                 />
               </div>
               <div className="flex flex-col gap-3">
-                <Label>Store Logo / Store Image</Label>
+                <Label>Product Image</Label>
                 {images.length > 0 ? (
                   <div className="flex gap-5">
                     {images.map((image, index) => (
@@ -220,7 +186,7 @@ const StoreCreatePage = () => {
                           width={200}
                           height={200}
                           src={image}
-                          alt="store_image"
+                          alt="product_image"
                           className="w-[200px] h-[200px] object-cover rounded-lg border"
                         />
                         <button
@@ -258,7 +224,7 @@ const StoreCreatePage = () => {
                   loading={isLoading}
                   className="mt-4"
                 >
-                  Create Store
+                  Create Product
                 </CustomButton>
               </CardFooter>
             </form>
@@ -269,4 +235,4 @@ const StoreCreatePage = () => {
   );
 };
 
-export default StoreCreatePage;
+export default ProductCreatePage;

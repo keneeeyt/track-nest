@@ -1,4 +1,4 @@
-import SignIn from "./_authentication/sign-in";
+import SignIn from "./(storefront)/_authentication/sign-in";
 
 function IndexPage(){
   return(

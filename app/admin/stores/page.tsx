@@ -36,7 +36,7 @@ const StorePage = () => {
           const resp = await axios.get<Store[]>('/api/store');
           setStores(resp.data);
         } catch (err) {
-          console.error('Error fetching users:', err);
+          console.error('Error fetching stores:', err);
           toast.error('Something went wrong. Please try again later.');
         } finally {
           setIsLoading(false);
