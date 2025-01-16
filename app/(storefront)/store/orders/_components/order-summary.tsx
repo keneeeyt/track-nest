@@ -241,7 +241,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                 </div>
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter>
+            <AlertDialogFooter className="mt-5">
               <AlertDialogCancel onClick={() => setOpen(false)}>
                 Close
               </AlertDialogCancel>
