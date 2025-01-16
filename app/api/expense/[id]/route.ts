@@ -2,6 +2,7 @@ import { connectDB } from "@/config/mongo-connect";
 import { decodeToken } from "@/middleware/authentication";
 import Expense from "@/model/expenses";
 import Store from "@/model/store";
+import Transaction from "@/model/transaction";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -146,6 +147,7 @@ export const DELETE = async (req: NextRequest, { params }: { params: { id: strin
     }
 
     await Expense.findByIdAndUpdate(params.id, { isDelete: true });
+    await Transaction.findOneAndDelete({ order_id: params.id });
 
     return new NextResponse("Expense deleted", { status: 200 });
   } catch (err) {

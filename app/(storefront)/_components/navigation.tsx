@@ -13,8 +13,8 @@ const Links = [
     href: "/store/transactions",
   },
   {
-    name: "Order",
-    href: "/store/order",
+    name: "Orders",
+    href: "/store/orders",
   },
   {
     name: "Expenses",

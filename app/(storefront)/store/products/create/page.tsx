@@ -44,7 +44,7 @@ const ProductSchema = z.object({
     .min(3, "Store name must be at least 3 characters long")
     .max(100, "Store name must be at most 100 characters long"),
   product_description: z.string()
-  .min(55, "Store description must be at least 55 characters long")
+  .min(10, "Store description must be at least 10 characters long")
   .max(150, "Store description must be at most 150 characters long"),
   price: z.number().int().positive("Price must be a positive number"),
   quantity: z.number().int().positive("Quantity must be a positive number"),

@@ -2,6 +2,7 @@ import { connectDB } from "@/config/mongo-connect";
 import { decodeToken } from "@/middleware/authentication";
 import Expense from "@/model/expenses";
 import Store from "@/model/store";
+import Transaction from "@/model/transaction";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -42,7 +43,24 @@ export const POST = async (req: NextRequest) => {
       user_id: id
     });
 
+    const transaction = new Transaction({
+      user_id: id,
+      store_id: store._id,
+      order_id: expense._id,
+      order_items: [{
+        _id: expense._id,
+        quantity: 1,
+        price: body.expenses_price,
+        product_name: body.expenses_title,
+        product_image: "",
+      }],
+      order_total: body.expenses_price,
+      order_date: body.expenses_date,
+      order_type: "expenses"
+    })
+
     await expense.save();
+    await transaction.save();
 
     return new NextResponse("Expense created", { status: 201 });
   } catch (err) {
