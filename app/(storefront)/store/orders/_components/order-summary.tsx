@@ -11,7 +11,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import moment from "moment";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -51,6 +50,7 @@ interface OrderSummaryProps {
   submitOrder?: () => void;
   isWalkin: boolean;
   submitOrderOnline?: (data: Customer) => void;
+  isLoading?: boolean;
 }
 
 const CustomerDetailsSchema = z.object({
@@ -73,6 +73,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   submitOrder,
   isWalkin,
   submitOrderOnline,
+  isLoading,
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
   const dateNow = new Date();
@@ -250,9 +251,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
               </AlertDialogAction>
 
               {isWalkin ? (
-                <Button onClick={() => submitOrder && submitOrder()}>
+                <CustomButton loading={isLoading} onClick={() => submitOrder && submitOrder()}>
                   Checkout
-                </Button>
+                </CustomButton>
               ) : (
                 <CustomButton
                   type="submit"

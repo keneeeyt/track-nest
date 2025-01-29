@@ -232,6 +232,7 @@ const WalkIn = () => {
         totalAmount={totalAmount}
         submitOrder={submitOrder}
         isWalkin={isWalkin}
+        isLoading={isLoading}
       />
     </>
   );

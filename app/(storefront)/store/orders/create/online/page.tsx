@@ -237,6 +237,7 @@ const Online = () => {
         totalAmount={totalAmount}
         submitOrderOnline={submitOrderOnline}
         isWalkin={isWalkin}
+        isLoading={isLoading}
       />
     </>
   );

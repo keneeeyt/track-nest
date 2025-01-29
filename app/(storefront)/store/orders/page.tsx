@@ -27,6 +27,7 @@ import Link from "next/link";
 // import Link from "next/link"; 
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { startOfMonth, endOfMonth } from 'date-fns'
 
 interface Order {
   _id: string;
@@ -41,12 +42,14 @@ const OrderPage = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
   const [totalIncome, setTotalIncome] = useState<number>(0);
+  const [startDate, setStartDate] = useState<Date>(startOfMonth(new Date()));
+  const [endDate, setEndDate] = useState<Date>(endOfMonth(new Date()));
 
   useEffect(() => {
     const getOrders = async () => {
       setIsLoading(true);
       try {
-        const resp = await axios.get<{orders: Order[], totalOrderPrice: number}>("/api/order");
+        const resp = await axios.get<{orders: Order[], totalOrderPrice: number}>(`/api/order?startDate=${startDate}&endDate=${endDate}`);
         const orders = resp.data.orders;
         const total = resp.data.totalOrderPrice;
         setOrders(orders);
@@ -59,7 +62,7 @@ const OrderPage = () => {
       }
     };
     getOrders();
-  }, []);
+  }, [endDate]); //eslint-disable-line
 
   const deleteOrder = async () => {
     try {
@@ -82,6 +85,13 @@ const OrderPage = () => {
       setOpen(false);
     }
   };
+
+
+  const handleDateChange = (date: any) => { //eslint-disable-line
+    setStartDate(date?.from || startOfMonth(new Date()))
+    setEndDate(date?.to || endOfMonth(new Date()))
+  }
+
 
   const columns: ColumnDef<any>[] = [ //eslint-disable-line
     {
@@ -201,6 +211,10 @@ const OrderPage = () => {
               link={"/store/orders/create"}
               AddName="Add Order"
               searchBy={"_id"}
+              showDateRange={true}
+              startDate={startDate}
+              endDate={endDate}
+              handleDateChange={handleDateChange}
             />
           )}
         </CardContent>

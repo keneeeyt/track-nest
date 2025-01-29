@@ -33,6 +33,7 @@ import {
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import { usePathname } from "next/navigation";
+import DateRangeOptions from "../date-range";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -40,6 +41,10 @@ interface DataTableProps<TData, TValue> {
   link?: string;
   AddName?: string;
   searchBy?: string;
+  startDate?: Date;
+  endDate?: Date;
+  handleDateChange?: (data: any) => void; // eslint-disable-line
+  showDateRange?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -47,7 +52,11 @@ export function DataTable<TData, TValue>({
   data,
   link,
   AddName,
-  searchBy
+  searchBy,
+  startDate,
+  endDate,
+  handleDateChange,
+  showDateRange
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -80,6 +89,12 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-5 md:space-y-0">
       <div className="md:flex items-center md:py-4 space-y-5 md:space-y-0">
+        <div className="flex flex-col md:flex-row gap-2 w-full">
+        {showDateRange && <DateRangeOptions
+          initialFrom={startDate}
+          initialTo={endDate}
+          onChange={handleDateChange}
+        />}
         <Input
           placeholder="Search by name..."
           value={
@@ -88,14 +103,13 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn(`${searchBy}`)?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="md:max-w-sm"
         />
+        </div>
         <div className="ml-auto flex flex-col md:flex-row gap-3 ">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                Columns
-              </Button>
+              <Button variant="outline">Columns</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {table
@@ -117,12 +131,18 @@ export function DataTable<TData, TValue>({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button asChild className="flex items-center gap-x-2" variant={"outline"}>
-          {pathname !== "/dashboard/orders" && <Link href={link  ?? ""}>
-            <PlusCircle className="w-4 h-4" />
-            <span>{AddName}</span>
-          </Link>}
-        </Button>
+          <Button
+            asChild
+            className="flex items-center gap-x-2"
+            variant={"outline"}
+          >
+            {pathname !== "/dashboard/orders" && (
+              <Link href={link ?? ""}>
+                <PlusCircle className="w-4 h-4" />
+                <span>{AddName}</span>
+              </Link>
+            )}
+          </Button>
         </div>
       </div>
       <div className="rounded-md border">

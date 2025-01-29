@@ -73,11 +73,11 @@ export const POST = async (req: NextRequest) => {
         user_id: id,
         store_id: store._id,
         order_id: order._id,
-        order_items: body.order_items,
-        order_total: body.order_total,
-        order_date: dateNow,
-        order_type: body.order_type,
-        order_online_details: body.order_online_details,
+        transaction_items: body.order_items,
+        transaction_total: body.order_total,
+        transaction_date: dateNow,
+        transaction_type: body.order_type,
+        transaction_online_details: body.order_online_details,
       });
 
       await order.save();
@@ -97,44 +97,67 @@ export const POST = async (req: NextRequest) => {
   }
 };
 
-export const GET = async () => {
+export const GET = async (req: NextRequest) => {
   try {
     await connectDB();
 
-    const cookieStore = cookies();
-    const accessToken = cookieStore.get("access-token")?.value;
+    const accessToken = cookies().get("access-token")?.value;
     if (!accessToken) {
-      return new NextResponse("Unauthorized: Token is missing or invalid.", {
-        status: 401,
-      });
+      return NextResponse.json(
+        { error: "Unauthorized: Token is missing or invalid." },
+        { status: 401 }
+      );
     }
 
-    const isOwner = decodeToken(accessToken);
-    const { role, id } = isOwner;
+    const user = decodeToken(accessToken);
+    const { role, id } = user;
 
     if (role !== "owner") {
-      return new NextResponse("Unauthorized: You are not an owner.", {
-        status: 401,
-      });
+      return NextResponse.json(
+        { error: "Forbidden: You do not have permission to perform this action." },
+        { status: 403 }
+      );
     }
 
     const store = await Store.findOne({ owner_id: id });
     if (!store) {
-      return new NextResponse("Store not found", { status: 404 });
+      return NextResponse.json({ error: "Store not found" }, { status: 404 });
+    }
+
+    const url = new URL(req.url);
+    const startDate = url.searchParams.get("startDate");
+    const endDate = url.searchParams.get("endDate");
+
+    let dateFilter = {};
+    if (startDate && endDate) {
+      dateFilter = {
+        createdAt: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        },
+      };
     }
 
     const totalOrder = await Order.aggregate([
-      { $match: { store_id: store._id, isDelete: false } },
+      { $match: { store_id: store._id, isDelete: false, ...dateFilter } },
       { $group: { _id: null, total: { $sum: "$order_total" } } },
     ]);
 
     const totalOrderPrice = totalOrder.length > 0 ? totalOrder[0].total : 0;
 
-    const orders = await Order.find({ store_id: store._id }).sort({ createdAt: -1 });
+    const orders = await Order.find({ store_id: store._id, ...dateFilter }).sort({
+      createdAt: -1,
+    });
 
-    return new NextResponse(JSON.stringify({orders, totalOrderPrice}), { status: 200 });
+    return NextResponse.json(
+      { orders, totalOrderPrice },
+      { status: 200 }
+    );
   } catch (err) {
     console.error("Error fetching orders:", err);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error", details: (err as Error).message },
+      { status: 500 }
+    );
   }
 };
