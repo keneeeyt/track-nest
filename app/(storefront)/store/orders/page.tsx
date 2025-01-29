@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 // import {
 //   DropdownMenu,
 //   DropdownMenuContent,
@@ -22,6 +23,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { ArrowUpDown, LoaderIcon, MoreHorizontal, ReceiptText } from "lucide-react"; //eslint-disable-line
+import Link from "next/link";
 // import Link from "next/link"; 
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -59,7 +61,7 @@ const OrderPage = () => {
     getOrders();
   }, []);
 
-  const deleteProduct = async () => {
+  const deleteOrder = async () => {
     try {
       setIsDeleteLoading(true);
       if (orderId) {
@@ -136,39 +138,39 @@ const OrderPage = () => {
           new Date(row.original.createdAt)
         ),
     },
-    // {
-    //   header: "Actions",
-    //   accessorKey: "actions",
-    //   cell: ({ row }: { row: any }) => ( //eslint-disable-line
-    //     <DropdownMenu>
-    //       <DropdownMenuTrigger asChild>
-    //         <Button size={"icon"} variant={"ghost"} className="outline-none">
-    //           <MoreHorizontal className="h-4 w-4" />
-    //         </Button>
-    //       </DropdownMenuTrigger>
-    //       <DropdownMenuContent align="end">
-    //         <DropdownMenuItem asChild>
-    //           <Link href={`/store/products/${row.original._id}`}>Edit</Link>
-    //         </DropdownMenuItem>
-    //         <DropdownMenuSeparator />
-    //         <DropdownMenuItem onClick={() => handleOpenModal(row.original._id)}>
-    //           Delete
-    //           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-    //         </DropdownMenuItem>
-    //       </DropdownMenuContent>
-    //     </DropdownMenu>
-    //   ),
-    // },
+    {
+      header: "Actions",
+      accessorKey: "actions",
+      cell: ({ row }: { row: any }) => ( //eslint-disable-line
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size={"icon"} variant={"ghost"} className="outline-none">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link href={`/store/orders/${row.original._id}`}>View</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => handleOpenModal(row.original._id)}>
+              Delete
+              <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
   ];
 
-  // const handleOpenModal = async (id: string) => {
-  //   if (id) {
-  //     setOpen(true);
-  //     setOrderId(id);
-  //   } else {
-  //     toast.error("Something went wrong. Please try again later.");
-  //   }
-  // };
+  const handleOpenModal = async (id: string) => {
+    if (id) {
+      setOpen(true);
+      setOrderId(id);
+    } else {
+      toast.error("Something went wrong. Please try again later.");
+    }
+  };
 
   return (
     <>
@@ -209,7 +211,7 @@ const OrderPage = () => {
         title="Delete Order"
         description="Are you sure you want to delete this order?"
         color="red"
-        onConfirm={() => deleteProduct()}
+        onConfirm={() => deleteOrder()}
         loading={isDeleteLoading}
       />
     </>
