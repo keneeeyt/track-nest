@@ -166,6 +166,7 @@ const UsersPage = () => {
               link={"/admin/users/create"}
               AddName="Add User"
               searchBy={"first_name"}
+              showAddButton={true}
             />
           )}
         </CardContent>

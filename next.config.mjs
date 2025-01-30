@@ -12,8 +12,14 @@ const nextConfig = {
         protocol: "https",
         hostname: "res.cloudinary.com",
         port: "",
+      }, 
+      {
+        protocol: "https",
+        hostname: "https://posbytz.com",
+        port: "",
       }
     ],
+    domains: ['posbytz.com'],
   },
 };
 

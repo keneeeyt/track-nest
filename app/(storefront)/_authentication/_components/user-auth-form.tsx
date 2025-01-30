@@ -54,6 +54,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       const resp = await axios.post('/api/auth/signin', data)
     
        toast.success(resp.data.message);
+       form.reset()
 
        if(resp.data.role === 'admin') {
         router.push("/admin");
@@ -65,8 +66,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         toast.error(error.response.data.message)
-        // reset the form data
-        form.reset()
       } else {
         toast.error('An unexpected error occurred')
       }

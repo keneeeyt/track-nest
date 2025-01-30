@@ -45,6 +45,8 @@ interface DataTableProps<TData, TValue> {
   endDate?: Date;
   handleDateChange?: (data: any) => void; // eslint-disable-line
   showDateRange?: boolean;
+  showAddButton?: boolean;
+  searchTitle?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -56,7 +58,9 @@ export function DataTable<TData, TValue>({
   startDate,
   endDate,
   handleDateChange,
-  showDateRange
+  showDateRange,
+  showAddButton,
+  searchTitle
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -96,7 +100,7 @@ export function DataTable<TData, TValue>({
           onChange={handleDateChange}
         />}
         <Input
-          placeholder="Search by name..."
+          placeholder={searchTitle || 'Search by name...'}
           value={
             (table.getColumn(`${searchBy}`)?.getFilterValue() as string) ?? ""
           }
@@ -131,7 +135,7 @@ export function DataTable<TData, TValue>({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button
+          {showAddButton && <Button
             asChild
             className="flex items-center gap-x-2"
             variant={"outline"}
@@ -142,7 +146,7 @@ export function DataTable<TData, TValue>({
                 <span>{AddName}</span>
               </Link>
             )}
-          </Button>
+          </Button>}
         </div>
       </div>
       <div className="rounded-md border">

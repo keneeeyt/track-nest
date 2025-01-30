@@ -203,6 +203,7 @@ const ProductPage = () => {
               link={"/store/products/create"}
               AddName="Add Product"
               searchBy={"product_name"}
+              showAddButton={true}
             />
           )}
         </CardContent>

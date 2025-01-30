@@ -215,6 +215,7 @@ const OrderPage = () => {
               startDate={startDate}
               endDate={endDate}
               handleDateChange={handleDateChange}
+              showAddButton={true}
             />
           )}
         </CardContent>

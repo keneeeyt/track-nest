@@ -206,6 +206,7 @@ const ExpensesPage = () => {
               link={"/store/expenses/create"}
               AddName="Add Expense"
               searchBy={"expenses_title"}
+              showAddButton={true}
             />
           )}
         </CardContent>

@@ -175,6 +175,7 @@ const StorePage = () => {
               link={"/admin/stores/create"}
               AddName="Add Store"
               searchBy={"store_name"}
+              showAddButton={true}
             />
           )}
         </CardContent>

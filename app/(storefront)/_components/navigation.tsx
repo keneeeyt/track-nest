@@ -25,10 +25,6 @@ const Links = [
     href: "/store/products",
   },
   {
-    name: "Employees",
-    href: "/store/employees",
-  },
-  {
     name: "Settings",
     href: "/store/settings",
   }

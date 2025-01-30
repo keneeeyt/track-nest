@@ -47,16 +47,16 @@ export const POST = async (req: NextRequest) => {
       user_id: id,
       store_id: store._id,
       order_id: expense._id,
-      order_items: [{
+      transaction_items: [{
         _id: expense._id,
         quantity: 1,
         price: body.expenses_price,
         product_name: body.expenses_title,
         product_image: "",
       }],
-      order_total: body.expenses_price,
-      order_date: body.expenses_date,
-      order_type: "expenses"
+      transaction_total: body.expenses_price,
+      transaction_date: body.expenses_date,
+      transaction_type: "expenses"
     })
 
     await expense.save();
