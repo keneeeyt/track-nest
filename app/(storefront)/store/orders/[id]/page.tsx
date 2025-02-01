@@ -8,6 +8,7 @@ import moment from "moment";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft, LoaderIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface OrderDetails {
   _id: string;
@@ -74,69 +75,83 @@ const OrderViewPage = () => {
         </div>
       </div>
 
-      <div className="border p-4 rounded-md">
+      <div className="p-5 rounded-md bg-gray-100 relative zigzag-border pb-10">
         <h2 className="text-lg font-medium mb-4">Order Details</h2>
-        {orderData.order_items.map((item) => (
-          <div
-            key={item._id}
-            className="flex justify-between items-center mb-4"
-          >
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-md overflow-hidden">
-                <Image
-                  width={400}
-                  height={400}
-                  src={item.product_image}
-                  alt="Product"
-                  className="w-full h-full object-cover"
-                />
+        <div
+          className={cn(
+            orderData.order_type === "online"
+              ? "grid grid-cols-1 md:grid-cols-2 gap-6"
+              : "",
+            ""
+          )}
+        >
+          <div>
+            {orderData.order_items.map((item) => (
+              <div
+                key={item._id}
+                className="flex justify-between items-center mb-4"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="w-16 h-16 rounded-md overflow-hidden">
+                    <Image
+                      width={400}
+                      height={400}
+                      src={item.product_image}
+                      alt="Product"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-medium">
+                      {item.product_name}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Quantity: {item.quantity}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-base font-medium">₱{item.price}</div>
               </div>
-              <div>
-                <h3 className="text-base font-medium">{item.product_name}</h3>
-                <p className="text-sm text-gray-500">
-                  Quantity: {item.quantity}
-                </p>
+            ))}
+            <div className="border-t pt-4 mt-4">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Subtotal</span>
+                <span className="text-base font-medium">
+                  ₱{orderData.order_total}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Discount</span>
+                <span className="text-base font-medium">₱0</span>
+              </div>
+              <div className="flex justify-between font-medium text-lg">
+                <span>Total</span>
+                <span>₱{orderData.order_total}</span>
               </div>
             </div>
-            <div className="text-base font-medium">₱{item.price}</div>
           </div>
-        ))}
-        <div className="border-t pt-4 mt-4">
-          <div className="flex justify-between">
-            <span className="text-gray-500">Subtotal</span>
-            <span className="text-base font-medium">
-              ₱{orderData.order_total}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Discount</span>
-            <span className="text-base font-medium">₱0</span>
-          </div>
-          <div className="flex justify-between font-medium text-lg">
-            <span>Total</span>
-            <span>₱{orderData.order_total}</span>
-          </div>
+          {orderData.order_type === "online" &&
+            orderData.order_online_details && (
+              <div className="rounded-md border-l p-2">
+                <h2 className="text-lg font-medium">Customer Details</h2>
+                <div className="mt-2">
+                  <p className="p-2">
+                    <strong>Name:</strong>{" "}
+                    {orderData.order_online_details[0].customer_name}
+                  </p>
+                  <p className="p-2">
+                    <strong>Phone:</strong>{" "}
+                    {orderData.order_online_details[0].customer_phone}
+                  </p>
+                  <p className="p-2">
+                    <strong>Address:</strong>{" "}
+                    {orderData.order_online_details[0].customer_address}
+                  </p>
+                </div>
+              </div>
+            )}
         </div>
       </div>
-      {orderData.order_type === "online" && orderData.order_online_details && (
-        <div className="mt-6 border p-4 rounded-md">
-          <h2 className="text-lg font-medium">Customer Details</h2>
-          <div className="mt-2">
-            <p>
-              <strong>Name:</strong>{" "}
-              {orderData.order_online_details[0].customer_name}
-            </p>
-            <p>
-              <strong>Phone:</strong>{" "}
-              {orderData.order_online_details[0].customer_phone}
-            </p>
-            <p>
-              <strong>Address:</strong>{" "}
-              {orderData.order_online_details[0].customer_address}
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

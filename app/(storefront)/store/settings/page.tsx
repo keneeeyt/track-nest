@@ -1,12 +1,11 @@
-import ComingSoon from "@/components/coming-soon";
-import React from "react";
+import SettingsProfile from "./profile/page";
 
 const SettingsPage = () => {
-  return (
-    <div>
-      <ComingSoon />
-    </div>
-  );
-};
+  return(
+ 
+      <SettingsProfile />
+
+  )
+}
 
 export default SettingsPage;

@@ -16,10 +16,11 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
+import { SiteFooter } from "@/components/footer";
 
 function StoreLayout({ children }: { readonly children: ReactNode }) {
   interface User {
@@ -29,6 +30,7 @@ function StoreLayout({ children }: { readonly children: ReactNode }) {
 
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const path = usePathname();
 
   useEffect(() => {
     const profile_pic = Cookies.get("profile_image") || "";
@@ -91,7 +93,7 @@ function StoreLayout({ children }: { readonly children: ReactNode }) {
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Link href="/admin/settings/profile">
+            <Link href={`/${path.split("/")[1]}/settings`}>
               {" "}
               <DropdownMenuItem>
                 <UserRoundPen className="mr-2 h-4 w-4" />
@@ -107,7 +109,8 @@ function StoreLayout({ children }: { readonly children: ReactNode }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </header>
-      <main className="my-5">{children}</main>
+      <main className="my-5 min-h-[80vh]">{children}</main>
+      <SiteFooter />
     </div>
   );
 }

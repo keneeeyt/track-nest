@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardStats from "./_components/dashboard-stats";
 
 const StorePage = () => {
-  const [selectedTab, setSelectedTab] = useState("this month");
+  const [selectedTab, setSelectedTab] = useState("this year");
 
   return (
     <Tabs
