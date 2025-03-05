@@ -25,6 +25,10 @@ const Links = [
     href: "/store/products",
   },
   {
+    name: "Inventories",
+    href: "/store/inventories",
+  },
+  {
     name: "Settings",
     href: "/store/settings",
   }
