@@ -34,7 +34,7 @@ export const GET = async (req: NextRequest) => {
     }
 
     const url = new URL(req.url);
-    const timeframe = url.searchParams.get("timeframe") || "this month"; // Default to today
+    const timeframe = url.searchParams.get("timeframe") || "this month"; // Default to this month
 
     // Define date range based on timeframe
     let startDate = new Date(); // eslint-disable-line
@@ -42,6 +42,13 @@ export const GET = async (req: NextRequest) => {
 
     if (timeframe === "today") {
       startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(23, 59, 59, 999);
+    } else if (timeframe === "this week") {
+      // Set start date to the previous Monday
+      startDate.setDate(startDate.getDate() - startDate.getDay() + 1);
+      startDate.setHours(0, 0, 0, 0);
+      // Set end date to the upcoming Sunday
+      endDate.setDate(startDate.getDate() + 6);
       endDate.setHours(23, 59, 59, 999);
     } else if (timeframe === "this month") {
       startDate.setDate(1);
@@ -149,6 +156,26 @@ export const GET = async (req: NextRequest) => {
       chartData = Object.keys(fourHourlySales).map((interval) => ({
         name: interval,
         total: fourHourlySales[interval],
+      }));
+    } else if (timeframe === "this week") {
+      const dailySales: Record<string, number> = {
+        Monday: 0,
+        Tuesday: 0,
+        Wednesday: 0,
+        Thursday: 0,
+        Friday: 0,
+        Saturday: 0,
+        Sunday: 0,
+      };
+
+      orders.forEach((order) => {
+        const day = new Date(order.order_date).toLocaleString("en-US", { weekday: "long" });
+        dailySales[day] += order.order_total;
+      });
+
+      chartData = Object.keys(dailySales).map((day) => ({
+        name: day,
+        total: dailySales[day],
       }));
     } else if (timeframe === "this month") {
       const weeklySales: Record<number, number> = {};

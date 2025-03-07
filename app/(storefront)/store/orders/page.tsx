@@ -117,18 +117,27 @@ const OrderPage = () => {
       enableHiding: false,
     },
     {
-      accessorKey: "_id",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Order ID
+            Order Items
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
+      accessorKey: "order",
+      cell: ({ row }: { row: any }) => ( //eslint-disable-line
+        <div className="flex items-center gap-2">
+          {row.original.order_items.map((item: any) => ( //eslint-disable-line
+            <div key={item._id}>
+              <p>{item.product_name},</p>
+            </div>
+          ))}
+        </div>
+      ),
     },
     {
       header: "Order Type",
@@ -143,10 +152,15 @@ const OrderPage = () => {
     {
       header: "Date",
       accessorKey: "order_date",
-      cell: ({ row }: { row: any }) => //eslint-disable-line
-        new Intl.DateTimeFormat("en-US").format(
-          new Date(row.original.createdAt)
-        ),
+      cell: ({ row }: { row: any }) => // eslint-disable-line
+        new Intl.DateTimeFormat("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        }).format(new Date(row.original.order_date)),
     },
     {
       header: "Actions",

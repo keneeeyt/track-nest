@@ -121,9 +121,14 @@ const TransactionPage = () => {
       cell: (
         { row }: { row: any } //eslint-disable-line
       ) =>
-        new Intl.DateTimeFormat("en-US").format(
-          new Date(row.original.createdAt)
-        ),
+        new Intl.DateTimeFormat("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        }).format(new Date(row.original.createdAt)),
     },
   ];
 

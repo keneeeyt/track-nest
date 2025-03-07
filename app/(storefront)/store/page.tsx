@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardStats from "./_components/dashboard-stats";
 
 const StorePage = () => {
-  const [selectedTab, setSelectedTab] = useState("this year");
+  const [selectedTab, setSelectedTab] = useState("this week");
 
   return (
     <Tabs
@@ -14,8 +14,17 @@ const StorePage = () => {
     >
       <div className="w-full overflow-x-auto pb-2">
         <TabsList>
-          <TabsTrigger value="today" onClick={() => setSelectedTab("today")}>
+          <TabsTrigger
+            value="today"
+            onClick={() => setSelectedTab("today")}
+          >
             Today
+          </TabsTrigger>
+          <TabsTrigger
+            value="this week"
+            onClick={() => setSelectedTab("this week")}
+          >
+            This Week
           </TabsTrigger>
           <TabsTrigger
             value="this month"
